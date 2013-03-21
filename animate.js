@@ -27,7 +27,7 @@ function block(x, y, width, height){
     this.x2 = this.x + this.width;
     this.y2 = this.y + this.height;
     //draws the block
-    ctx.fillStytle = "rgb(0, 0, 0)";
+    ctx.fillStytle = "rgb(20, 0, 0)";
     ctx.fillRect(this.x, this.y, this.width, this.height);
     //velocity horizontal and vertical(postive = down)
     this.vx = -2;
@@ -43,11 +43,11 @@ function block(x, y, width, height){
     };
     //reverses horizontal direciton
     this.bounceX = function(){
-        this.vx = this.vx*-1;
+        this.vx = this.vx*-1.1;
     };
     //reveres vertical direction
     this.bounceY = function(){
-        this.vy = this.vy*-1;
+        this.vy = this.vy*-1.1;
     };
 
     /*
@@ -59,7 +59,7 @@ function block(x, y, width, height){
         this.x2 = this.x2+(1*this.vx);
         this.y = this.y+(1*this.vy);
         this.y2 = this.y2+(1*this.vy);
-        ctx.fillStyle = "rgb(0, 0, 0)";
+        ctx.fillStyle = "rgb(200, 0, 0)";
         ctx.fillRect(this.x, this.y, this.width,  this.height); //draws block
     };
     /*
