@@ -75,6 +75,17 @@ function block(x, y, width, height){
         if(this.x<=0 || this.x2>=600){
             this.reset();
         }
+        this.paddleBounce();
+    };
+
+    this.paddleBounce = function(){
+        if(this.x <= paddle1.x2 && (this.y <= paddle1.y2 && this.y2 >= paddle1.y)){
+            this.bounceX();
+        }
+        if(this.x2 >= paddle2.x && (this.y <= paddle2.y2 && this.y2 >= paddle2.y)){
+            this.bounceX();
+        }
+
     };
     /*
     resets ball to center screen when side walls are crossed
@@ -91,6 +102,7 @@ function block(x, y, width, height){
     };
 };
 
+//initialize with starting x,y coordinates
 function paddle(x, y){
    //upper left corner
    this.x = x;
@@ -172,7 +184,6 @@ var Key = {
 var block1 = new block(canvasW/2, canvasH/2, 20, 20); //ping pong object
 var paddle1 = new paddle(10, 140); // left paddle
 var paddle2 = new paddle(575, 140); //right paddle
-
 //event loop, runs every 0.025 seconds
 setInterval(function(){
     //clears whole screen before objects are redrawn
