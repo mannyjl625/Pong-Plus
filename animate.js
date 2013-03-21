@@ -26,13 +26,12 @@ function block(x, y, width, height){
     //lower right corner coordinate
     this.x2 = this.x + this.width;
     this.y2 = this.y + this.height;
-    this.position = [this.x, this.y, this.x2, this.y2]; 
     //draws the block
     ctx.fillStytle = "rgb(0, 0, 0)";
     ctx.fillRect(this.x, this.y, this.width, this.height);
     //velocity horizontal and vertical(postive = down)
-    this.vx = 0;
-    this.vy = 0;
+    this.vx = -2;
+    this.vy = -2;
 
     //getter for horizontal velocity
     this.getVX = function(){
@@ -50,19 +49,12 @@ function block(x, y, width, height){
     this.bounceY = function(){
         this.vy = this.vy*-1;
     };
-    
-    //returns array of corner coordinates [x1, y1, x2, y2]
-    this.getCoor = function(){
-        return this.position;
-    };
 
     /*
     redraws block in its current direction to mimic movement
     */
     this.moveBlock = function(){
-        //ctx.clearRect(this.x, this.y, this.width, this.height);
-        //ctx.clearRect(0, 0, 600, 340);
-        this.collision(); 
+        this.collision(); //checks for collision conditions
         this.x = this.x+(1*this.vx); //keeps block moving in current direction
         this.x2 = this.x2+(1*this.vx);
         this.y = this.y+(1*this.vy);
@@ -84,63 +76,121 @@ function block(x, y, width, height){
             this.reset();
         }
     };
-
+    /*
+    resets ball to center screen when side walls are crossed
+    velocities are reset
+    */
     this.reset = function(){
         this.x = 300;
         this.y = 170;
         this.x2 =this.x+this.width;
         this.y2 = this.y+this.height;
-    
+        //resets velocities
+        this.vx = -2;
+        this.vy = -2;
     };
-
 };
 
 function paddle(x, y){
+   //upper left corner
    this.x = x;
    this.y = y;
    
    this.width = 15;
    this.height = 70;
-
+   
+   //lower right corner
    this.x2 = this.x+this.width;
    this.y2 = this.y+this.height;
    
    ctx.fillStyle = "rgb(0, 0, 200)";
    ctx.fillRect(this.x, this.y, this.width, this.height); 
+   
+   //updates paddles position according to key press
+   this.update = function(){
+        if(this.x > 300){  // for right paddle
+            if(Key.isDown(Key.UP)) this.moveUp();
+            if(Key.isDown(Key.DOWN)) this.moveDown();
+
+        }else{   //for left paddle
+            if(Key.isDown(Key.W)) this.moveUp();
+            if(Key.isDown(Key.S)) this.moveDown();
+        }
+        this.draw();
+   }
+   //draws paddle
    this.draw = function(){
         ctx.fillStyle = "rgb(0, 0, 200)";
         ctx.fillRect(this.x, this.y, this.width, this.height);
    };
+
+   //called when up/w key is pressed, cannot go past borders
    this.moveUp = function(){
        if(this.y>0){
             this.y = this.y-3;
             this.y2 = this.y2-3;
-            this.draw();
        }
    };
+
+   //called when down/s key is pressed, cannot go past borders
    this.moveDown = function(){
         if(this.y2<340){
             this.y = this.y+3;
             this.y2 = this.y2+3;
-            this.draw();
         }
    };
 };
-//block objects
-var block1 = new block(canvasW/2, canvasH/2, 20, 20);
-var paddle1 = new paddle(10, 140);
-var paddle2 = new paddle(575, 140);
-//var block2 = new block(canvasW/2-80, canvasH/2-80, 75, 75);
-//event loop, runs every 0.025 seconds
+/*
+Key helper class that keeps track of keys up and down
+in _pressed array
+*/
 
+var Key = {
+    //array that keeps track of key presses
+    _pressed: {},
+
+    //controls
+    UP: 38,
+    DOWN: 40,
+    W: 87,
+    S: 83,
+    
+    //the status of the corresponding key(down/true or up/false)
+    isDown: function(keyCode){
+        return this._pressed[keyCode];
+    },
+    //sets array index to true when key is pressed
+    onKeydown: function(event){
+        this._pressed[event.keyCode] = true;
+    },
+    //unsets array index when key is released
+    onKeyup: function(event){
+        delete this._pressed[event.keyCode];
+    }
+};
+
+var block1 = new block(canvasW/2, canvasH/2, 20, 20); //ping pong object
+var paddle1 = new paddle(10, 140); // left paddle
+var paddle2 = new paddle(575, 140); //right paddle
+
+//event loop, runs every 0.025 seconds
 setInterval(function(){
-    //clears whole screen before blocks are redrawn
+    //clears whole screen before objects are redrawn
     ctx.clearRect(0, 0, 600, 340);
     block1.moveBlock();
-    paddle1.draw();
-    paddle2.draw();
-    //block2.moveBlock();
+    paddle1.update();
+    paddle2.update();
 }, 25);
+
+/*
+Event listeners that check for keyboard input
+*/
+window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
+window.addEventListener('keydown', function(event) {Key.onKeydown(event); }, false);
+
+
+/*
+old choppy event listener setup, only one input at a time
 
 window.addEventListener('keydown', function(event){
     switch (event.keyCode){
@@ -150,5 +200,11 @@ window.addEventListener('keydown', function(event){
     case 40:  //down key
         paddle2.moveDown();
         break;
+    case 87:
+        paddle1.moveUp();
+        break;
+    case 83:
+        paddle1.moveDown();
+        break;
     }
-}, false);
+}, false);*/
