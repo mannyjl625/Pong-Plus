@@ -13,26 +13,64 @@ var canvas = document.getElementById('screen');
 
 //getContext makes context object that is filled with functions for drawing
 var ctx = canvas.getContext('2d');
-/*
- //creates red object
-ctx.fillStyle = "rgb(0, 0, 0)";
-
-//sets object to coordinates 20,20 75px wide 50px hieght
-ctx.fillRect(20, 20, 75, 50);  
-//sets color with fourth argument for opacity
-ctx.fillStyle = "rgba(0, 0, 200, 0.5)" 
-
-ctx.fillRect(40, 40, 50, 50);
+/*block class
 */
+function block(x, y, width, height){
+    //upper left corner
+    this.x = x;
+    this.y = y;
 
-var x = 30;
-var y = 30
-ctx.fillStyle = "rgb(0, 0, 0)";
+    this.width = width;
+    this.height = height;
+    //lower right corner
+    this.x2 = this.x + this.width;
+    this.y2 = this.y + this.height;
+    this.position = [this.x, this.y, this.x2, this.y2]; 
+    //draws the block
+    ctx.fillStytle = "rgb(0, 0, 0)";
+    ctx.save();
+    ctx.restore();
+    ctx.fillRect(x, y, width, height);
+    //velocity horizontal and vertical(postive = down)
+    this.vx = 1;
+    this.vy = -1;
+
+    this.getVX = function(){
+        return this.vx;
+    };
+    this.getVY = function(){
+        return this.vy;
+    };
+
+    this.bounceX = function(){
+        this.vx = this.vx*-1;
+    };
+
+    this.bounceY = function(){
+        this.vy = this.vy*-1;
+    };
+
+    this.getCoor = function(){
+        return this.position;
+    };
+
+    this.draw = function(){
+       
+    };
+
+    this.moveBlock = function(){
+        //console.log("moving");
+        ctx.clearRect(this.x, this.y, this.width, this.height);
+        this.x = this.x+(1*this.vx);
+        this.y = this.y+(1*this.vy);
+        ctx.fillRect(this.x, this.y, this.width,  this.height);
+    };
+};
+
+var block1 = new block(canvasW/2, canvasH/2, 75, 75);
+var block2 = new block(canvasW/2-80, canvasH/2-80, 75, 75);
 setInterval(function(){
-    x++;
-    y++;
-    ctx.clearRect(0, 0, canvasW, canvasH);
-    ctx.fillRect(x, y, 75, 50);
+    block1.moveBlock();
+    block2.moveBlock();
 }, 25);
-
 
