@@ -8,13 +8,13 @@ setTimeout(function(){
 
 console.log("hello");
 
-// grabs canvas by ID from index.php
+// grabs canvas by ID from index.html
 var canvas = document.getElementById('screen');
 
 //getContext makes context object that is filled with functions for drawing
 var ctx = canvas.getContext('2d');
 /*
-block class
+block class, includes coordinates, velocities, collision and move functions
 */
 function block(x, y, width, height){
     //upper left corner coordinate
@@ -33,8 +33,8 @@ function block(x, y, width, height){
     //ctx.restore();
     ctx.fillRect(x, y, width, height);
     //velocity horizontal and vertical(postive = down)
-    this.vx = -2;
-    this.vy = -2;
+    this.vx = 0;
+    this.vy = 0;
 
     //getter for horizontal velocity
     this.getVX = function(){
@@ -80,21 +80,30 @@ function block(x, y, width, height){
         if(this.y<=0 || this.y2>=340){
            this.bounceY();
         }
-        //check left/right
+        //checks left/right
         if(this.x<=0 || this.x2>=600){
-            this.bounceX();
+            this.reset();
+    };
+
+    this.reset = function(){
+            this.x = 300;
+            this.y = 170;
+            this.x2 =this.x+this.width;
+            this.y2 = this.y+this.height;
         }
     };
 
 };
+
+//function paddle = 
 //block objects
 var block1 = new block(canvasW/2, canvasH/2, 75, 75);
-var block2 = new block(canvasW/2-80, canvasH/2-80, 75, 75);
+//var block2 = new block(canvasW/2-80, canvasH/2-80, 75, 75);
 //event loop, runs every 0.025 seconds
 setInterval(function(){
     //clears whole screen before blocks are redrawn
     ctx.clearRect(0, 0, 600, 340);
     block1.moveBlock();
-    block2.moveBlock();
+    //block2.moveBlock();
 }, 25);
 
