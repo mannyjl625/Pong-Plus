@@ -112,16 +112,16 @@ function paddle(x, y){
         ctx.fillRect(this.x, this.y, this.width, this.height);
    };
    this.moveUp = function(){
-       if(y>0){
-            this.y = this.y-1;
-            this.y2 = this.y2-1;
+       if(this.y>0){
+            this.y = this.y-3;
+            this.y2 = this.y2-3;
             this.draw();
        }
    };
    this.moveDown = function(){
-        if(y2<340){
-            this.y = this.y+1;
-            this.y2 = this.y2+1;
+        if(this.y2<340){
+            this.y = this.y+3;
+            this.y2 = this.y2+3;
             this.draw();
         }
    };
@@ -142,4 +142,13 @@ setInterval(function(){
     //block2.moveBlock();
 }, 25);
 
-
+window.addEventListener('keydown', function(event){
+    switch (event.keyCode){
+    case 38: //up key
+        paddle2.moveUp();
+        break;
+    case 40:  //down key
+        paddle2.moveDown();
+        break;
+    }
+}, false);
