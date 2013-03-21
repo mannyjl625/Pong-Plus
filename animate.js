@@ -65,6 +65,11 @@ function block(x, y, width, height){
         this.y = this.y+(1*this.vy);
         ctx.fillRect(this.x, this.y, this.width,  this.height);
     };
+
+    this.collision = function(){
+        
+    }
+
 };
 
 var block1 = new block(canvasW/2, canvasH/2, 75, 75);
