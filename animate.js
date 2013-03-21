@@ -29,9 +29,7 @@ function block(x, y, width, height){
     this.position = [this.x, this.y, this.x2, this.y2]; 
     //draws the block
     ctx.fillStytle = "rgb(0, 0, 0)";
-    //ctx.save();
-    //ctx.restore();
-    ctx.fillRect(x, y, width, height);
+    ctx.fillRect(this.x, this.y, this.width, this.height);
     //velocity horizontal and vertical(postive = down)
     this.vx = 0;
     this.vy = 0;
@@ -69,6 +67,7 @@ function block(x, y, width, height){
         this.x2 = this.x2+(1*this.vx);
         this.y = this.y+(1*this.vy);
         this.y2 = this.y2+(1*this.vy);
+        ctx.fillStyle = "rgb(0, 0, 0)";
         ctx.fillRect(this.x, this.y, this.width,  this.height); //draws block
     };
     /*
@@ -83,27 +82,64 @@ function block(x, y, width, height){
         //checks left/right
         if(this.x<=0 || this.x2>=600){
             this.reset();
+        }
     };
 
     this.reset = function(){
-            this.x = 300;
-            this.y = 170;
-            this.x2 =this.x+this.width;
-            this.y2 = this.y+this.height;
-        }
+        this.x = 300;
+        this.y = 170;
+        this.x2 =this.x+this.width;
+        this.y2 = this.y+this.height;
+    
     };
 
 };
 
-//function paddle = 
+function paddle(x, y){
+   this.x = x;
+   this.y = y;
+   
+   this.width = 15;
+   this.height = 70;
+
+   this.x2 = this.x+this.width;
+   this.y2 = this.y+this.height;
+   
+   ctx.fillStyle = "rgb(0, 0, 200)";
+   ctx.fillRect(this.x, this.y, this.width, this.height); 
+   this.draw = function(){
+        ctx.fillStyle = "rgb(0, 0, 200)";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+   };
+   this.moveUp = function(){
+       if(y>0){
+            this.y = this.y-1;
+            this.y2 = this.y2-1;
+            this.draw();
+       }
+   };
+   this.moveDown = function(){
+        if(y2<340){
+            this.y = this.y+1;
+            this.y2 = this.y2+1;
+            this.draw();
+        }
+   };
+};
 //block objects
-var block1 = new block(canvasW/2, canvasH/2, 75, 75);
+var block1 = new block(canvasW/2, canvasH/2, 20, 20);
+var paddle1 = new paddle(10, 140);
+var paddle2 = new paddle(575, 140);
 //var block2 = new block(canvasW/2-80, canvasH/2-80, 75, 75);
 //event loop, runs every 0.025 seconds
+
 setInterval(function(){
     //clears whole screen before blocks are redrawn
     ctx.clearRect(0, 0, 600, 340);
     block1.moveBlock();
+    paddle1.draw();
+    paddle2.draw();
     //block2.moveBlock();
 }, 25);
+
 
