@@ -59,7 +59,7 @@ function block(x, y, width, height){
         this.x2 = this.x2+(1*this.vx);
         this.y = this.y+(1*this.vy);
         this.y2 = this.y2+(1*this.vy);
-        ctx.fillStyle = "rgb(200, 0, 0)";
+        ctx.fillStyle = "rgb(300, 200, 200)";
         ctx.fillRect(this.x, this.y, this.width,  this.height); //draws block
     };
     /*
