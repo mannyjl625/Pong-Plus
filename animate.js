@@ -1,13 +1,13 @@
 var canvasH = 340;
 var canvasW = 600;
-
+/*
 setTimeout(function(){
     console.log("world");
 
 }, 3000);
 
 console.log("hello");
-
+*/
 // grabs canvas by ID from index.html
 var canvas = document.getElementById('screen');
 
@@ -31,7 +31,8 @@ function block(x, y, width, height){
     ctx.fillRect(this.x, this.y, this.width, this.height);
     //velocity horizontal and vertical(postive = down)
     this.vx = -2;
-    this.vy = -2;
+    this.vy = -1.7;
+    //cap at 9
 
     //getter for horizontal velocity
     this.getVX = function(){
@@ -44,6 +45,7 @@ function block(x, y, width, height){
     //reverses horizontal direciton
     this.bounceX = function(){
         this.vx = this.vx*-1.1;
+        console.log(this.vx);
     };
     //reveres vertical direction
     this.bounceY = function(){
@@ -93,13 +95,13 @@ function block(x, y, width, height){
     velocities are reset
     */
     this.reset = function(){
-        this.x = 300;
+        this.x = 280;
         this.y = 170;
         this.x2 =this.x+this.width;
         this.y2 = this.y+this.height;
         //resets velocities
         this.vx = -2;
-        this.vy = -2;
+        this.vy = -1.7;
     };
 };
 
