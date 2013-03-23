@@ -45,7 +45,7 @@ function block(x, y, width, height){
 
     //velocity horizontal and vertical(postive = down)
     this.vx = -2;
-    this.vy = 0;
+    this.vy = -1.7;
     //cap at 14
 
     //getter for horizontal velocity
@@ -70,13 +70,28 @@ function block(x, y, width, height){
     };
     //reverses horizontal direciton
     this.bounceX = function(){
-        this.vx = this.vx*-1.1;
+        if(Math.abs(this.vx*-1.1)<=12){
+            this.vx = this.vx*-1.1;
+        }else{
+            this.vx = this.vx*-1;
+        }
         console.log(this.vx);
     };
     //reveres vertical direction
     this.bounceY = function(){
-        this.vx = this.vx*1.1;
-        this.vy = this.vy*-1.1;
+        if(Math.abs(this.vx*1.1)<12){
+            this.vx = this.vx*1.1;
+        }else{
+            this.vx - this.vx*1;
+        }
+
+        if(Math.abs(this.vy*-1.1)<12){
+            this.vy = this.vy*-1.1;
+        }else{
+            this.vy = this.vy*1.1;
+        }
+        //this.vx = this.vx*1.1;
+        //this.vy = this.vy*-1.1;
     };
 
     /*
@@ -128,7 +143,7 @@ function block(x, y, width, height){
         this.y2 = this.y+this.height;
         //resets velocities
         this.vx = -2;
-        this.vy = 0; //1.7
+        this.vy = -1.7; //-1.7
     };
 };
 
