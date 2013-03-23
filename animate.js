@@ -1,5 +1,6 @@
 var canvasH = 340;
 var canvasW = 600;
+console.log("hello");
 /*
 setTimeout(function(){
     console.log("world");
@@ -18,23 +19,48 @@ block class, includes coordinates, velocities, collision and move functions
 */
 function block(x, y, width, height){
     //upper left corner coordinate
-    this.x = x;
-    this.y = y;
+   // this.x = x;
+   // this.y = y;
 
     this.width = width;
     this.height = height;
+    this.radius = width/2;
+
+    this.x = x;
+    this.y = y;
+
     //lower right corner coordinate
-    this.x2 = this.x + this.width;
-    this.y2 = this.y + this.height;
+    this.x2 = x + this.width;
+    this.y2 = y + this.width;
+    
+    /*
     //draws the block
-    ctx.fillStytle = "rgb(0, 0, 0)";
+    ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.fillStyle="black";
+    ctx.beginPath();
+    context.arc(this.x,this.x,this.radius,0,Math.PI*2,true);
+    context.fill();
+    */
+
     //velocity horizontal and vertical(postive = down)
     this.vx = -2;
-    this.vy = -1.7;
-    //cap at 9
+    this.vy = 0;
+    //cap at 14
 
     //getter for horizontal velocity
+    this.draw = function(){
+        //draws the block
+        ctx.fillStyle = "rgb(0, 0, 0)";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        /*
+        ctx.fillStyle="black";
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.radius,0,Math.PI*2,true);
+        ctx.fill();
+        */
+    };
+    this.draw();     
     this.getVX = function(){
         return this.vx;
     };
@@ -62,8 +88,9 @@ function block(x, y, width, height){
         this.x2 = this.x2+(1*this.vx);
         this.y = this.y+(1*this.vy);
         this.y2 = this.y2+(1*this.vy);
-        ctx.fillStyle = "rgb(0, 0, 0)";
-        ctx.fillRect(this.x, this.y, this.width,  this.height); //draws block
+        //ctx.fillStyle = "rgb(0, 0, 0)";
+        //ctx.fillRect(this.x, this.y, this.width,  this.height);
+        this.draw(); //draws block
     };
     /*
     checks if corners are inbounds
@@ -101,7 +128,7 @@ function block(x, y, width, height){
         this.y2 = this.y+this.height;
         //resets velocities
         this.vx = -2;
-        this.vy = -1.7;
+        this.vy = 0; //1.7
     };
 };
 

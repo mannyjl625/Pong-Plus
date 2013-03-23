@@ -3,12 +3,13 @@
     fine-tune accelerating ball*
     fine tune paddle speed
     fixed paddle kamehameha glitch
-    velocity cap on ball (9)
+    velocity cap on ball (14)
     add bounce sound effects
     score keeper with win screen
     general presentation
     ball pause button(space)
-    circle pong ball
+    circle pong ball*tweak hitbox
     customizable paddle/ball colors
     online play? (keep dreaming)
+    
     twist!?! cycle colors ala outland
