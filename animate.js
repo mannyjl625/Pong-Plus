@@ -1,6 +1,5 @@
 var canvasH = 340;
 var canvasW = 600;
-console.log("hello");
 /*
 setTimeout(function(){
     console.log("world");
@@ -17,30 +16,20 @@ var ctx = canvas.getContext('2d');
 /*
 block class, includes coordinates, velocities, collision and move functions
 */
+
+
 function block(x, y, width, height){
-    //
 
     this.width = width;
     this.height = height;
     this.radius = width/2;
-
+    //upper left coordinates
     this.x = x;
     this.y = y;
 
     //lower right corner coordinate
     this.x2 = x + this.width;
     this.y2 = y + this.width;
-    
-    /*
-    //draws the block
-    ctx.fillStyle = "rgb(0, 0, 0)";
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-    ctx.fillStyle="black";
-    ctx.beginPath();
-    context.arc(this.x,this.x,this.radius,0,Math.PI*2,true);
-    context.fill();
-    */
-
     //velocity horizontal and vertical(postive = down)
     //cap at 12
     this.vx = -2;
@@ -52,7 +41,7 @@ function block(x, y, width, height){
 
     this.draw = function(){
         //draws the block
-        ctx.fillStyle = "rgb(0, 0, 0)";
+        ctx.fillStyle = "rgb(0, 200, 0)";
         ctx.fillRect(this.x, this.y, this.width, this.height);
         /*
         ctx.fillStyle="black";
@@ -80,9 +69,9 @@ function block(x, y, width, height){
         }
 
         if(Math.abs(this.vy*-1.1)<12){
-            this.vy = this.vy*-1.1;
+            this.vy = this.vy*-1.13;
         }else{
-            this.vy = this.vy*-1.1;
+            this.vy = this.vy*-1.13;
         }
     };
 
@@ -138,7 +127,8 @@ function block(x, y, width, height){
         this.vx = -2;
         this.vy = -1.7; //-1.7
     };
-
+    
+    /*handles pausing/unpausing of the game*/
     this.checkPause = function(){
         if(Key.isPressed(Key.P) && this.vx !== 0 && this.canPause){
             this.vxSpare = this.vx;
@@ -147,8 +137,6 @@ function block(x, y, width, height){
             this.vy = 0;
             this.canPause = false;  //cancels ability to unpause until new press occures
             //console.log('pause');  
-           
-
         }else if(Key.isPressed(Key.P) && this.vx == 0 && this.canPause){
             this.vx = this.vxSpare;
             this.vy = this.vySpare;
@@ -196,7 +184,7 @@ function paddle(x, y){
    }
    //draws paddle
    this.draw = function(){
-        ctx.fillStyle = "rgb(0, 0, 200)";
+        ctx.fillStyle = "rgb(0, 150, 0)";
         ctx.fillRect(this.x, this.y, this.width, this.height);
    };
 
@@ -226,12 +214,12 @@ var Key = {
     _pressed: {},
 
     //controls
-    UP: 38,
-    DOWN: 40,
-    W: 87,
-    S: 83,
-    P: 80,
-    O: 79,
+    W: 87,      //player1 up
+    S: 83,      //player1 down
+    UP: 38,     //player2 up
+    DOWN: 40,   //player2 down
+    P: 80,      //pause/unpause ball
+    
     //the status of the corresponding key(down/true or up/false)
     isDown: function(keyCode){
         return this._pressed[keyCode];
@@ -272,30 +260,7 @@ setInterval(function(){
     paddle2.update();
 }, 25);
 
-/*
-Event listeners that check for keyboard input
-*/
+//Event listeners that check for keyboard input
 window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); //breaks left paddle
 window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
 window.addEventListener('keydown', function(event) {Key.onKeydown(event); }, false);
-
-
-/*
-old choppy event listener setup, only one input at a time
-
-window.addEventListener('keydown', function(event){
-    switch (event.keyCode){
-    case 38: //up key
-        paddle2.moveUp();
-        break;
-    case 40:  //down key
-        paddle2.moveDown();
-        break;
-    case 87:
-        paddle1.moveUp();
-        break;
-    case 83:
-        paddle1.moveDown();
-        break;
-    }
-}, false);*/

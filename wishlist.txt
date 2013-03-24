@@ -11,5 +11,4 @@
     circle pong ball*tweak hitbox
     customizable paddle/ball colors
     online play? (keep dreaming)
-    angle for paddle
     twist!?! cycle colors ala outland
