@@ -18,9 +18,7 @@ var ctx = canvas.getContext('2d');
 block class, includes coordinates, velocities, collision and move functions
 */
 function block(x, y, width, height){
-    //upper left corner coordinate
-   // this.x = x;
-   // this.y = y;
+    //
 
     this.width = width;
     this.height = height;
@@ -44,13 +42,14 @@ function block(x, y, width, height){
     */
 
     //velocity horizontal and vertical(postive = down)
+    //cap at 12
     this.vx = -2;
     this.vy = -1.7;
     this.vxSpare = 0;
     this.vySpare = 0;
-    //cap at 14
+    //helps pause button work
+    this.canPause =false;
 
-    //getter for horizontal velocity
     this.draw = function(){
         //draws the block
         ctx.fillStyle = "rgb(0, 0, 0)";
@@ -63,13 +62,6 @@ function block(x, y, width, height){
         */
     };
     this.draw();     
-    this.getVX = function(){
-        return this.vx;
-    };
-    //getter for vertical velocity
-    this.getVY = function(){
-        return this.vy;
-    };
     //reverses horizontal direciton
     this.bounceX = function(){
         if(Math.abs(this.vx*-1.1)<=12){
@@ -77,7 +69,7 @@ function block(x, y, width, height){
         }else{
             this.vx = this.vx*-1;
         }
-        console.log(this.vx);
+        //console.log(this.vx);
     };
     //reveres vertical direction
     this.bounceY = function(){
@@ -92,15 +84,13 @@ function block(x, y, width, height){
         }else{
             this.vy = this.vy*-1.1;
         }
-        //this.vx = this.vx*1.1;
-        //this.vy = this.vy*-1.1;
     };
 
     /*
     redraws block in its current direction to mimic movement
     */
     this.moveBlock = function(){
-        //this.checkPause();
+        this.checkPause();
         this.collision(); //checks for collision conditions
         this.x = this.x+(1*this.vx); //keeps block moving in current direction
         this.x2 = this.x2+(1*this.vx);
@@ -150,18 +140,25 @@ function block(x, y, width, height){
     };
 
     this.checkPause = function(){
-        if(Key.isPressed(Key.P) && this.vxSpare == 0){
+        if(Key.isPressed(Key.P) && this.vx !== 0 && this.canPause){
             this.vxSpare = this.vx;
             this.vySpare = this.vy;
             this.vx = 0;
             this.vy = 0;
-        }else if(Key.isPressed(Key.P) && this.vxSpare != 0){
+            this.canPause = false;  //cancels ability to unpause until new press occures
+            //console.log('pause');  
+           
+
+        }else if(Key.isPressed(Key.P) && this.vx == 0 && this.canPause){
             this.vx = this.vxSpare;
             this.vy = this.vySpare;
             this.vxSpare = 0;
-            this.vySpare = y;
+            this.vySpare = 0;
+            this.canPause = false;
+            //console.log('unpause');
+        }else if(!Key.isPressed(Key.P)){  //allows for another (un)pause when button is released
+            this.canPause = true;
         }
-
     };
 };
 
@@ -186,10 +183,10 @@ function paddle(x, y){
         if(this.x > 300){  // for right paddle
             if(Key.isDown(Key.UP)){
                 this.moveUp();
-                console.log("pressing player 2 up");
+                //console.log("pressing player 2 up");
             }if(Key.isDown(Key.DOWN)){
                 this.moveDown();
-                console.log("pressing player 2 down");
+                //console.log("pressing player 2 down");
             }
         }else{   //for left paddle
             if(Key.isDown(Key.W)) this.moveUp();
@@ -234,7 +231,7 @@ var Key = {
     W: 87,
     S: 83,
     P: 80,
-    
+    O: 79,
     //the status of the corresponding key(down/true or up/false)
     isDown: function(keyCode){
         return this._pressed[keyCode];
@@ -249,10 +246,10 @@ var Key = {
     },
     
     onKeypress: function(event){
-        if(this._pressed[event.keyCode]){
-            delete this._pressed[event.keyCode];
-        }else{
-            this._pressed[event.keyCode] = true;
+        if(this._pressed[event.which]){
+            delete this._pressed[event.which];  //use event.which for firefox keyPress
+        }else{                                  //event.keyCode for IE onKeyPress
+            this._pressed[event.which] = true;
         }
     },
     
@@ -278,7 +275,7 @@ setInterval(function(){
 /*
 Event listeners that check for keyboard input
 */
-//window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); breaks left paddle
+window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); //breaks left paddle
 window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
 window.addEventListener('keydown', function(event) {Key.onKeydown(event); }, false);
 
