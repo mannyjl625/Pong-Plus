@@ -17,7 +17,6 @@ var ctx = canvas.getContext('2d');
 block class, includes coordinates, velocities, collision and move functions
 */
 
-
 function block(x, y, width, height){
 
     this.width = width;
@@ -99,7 +98,12 @@ function block(x, y, width, height){
            this.bounceY();
         }
         //checks left/right
-        if(this.x<=0 || this.x2>=600){
+        if(this.x<=0){
+            score.score2++;
+            this.reset();
+        }
+        if(this.x2>=600){
+            score.score1++;
             this.reset();
         }
         this.paddleBounce();
@@ -119,30 +123,45 @@ function block(x, y, width, height){
     velocities are reset
     */
     this.reset = function(){
-        this.x = 280;
-        this.y = 170;
+        this.x = 290;
+        this.y = 160;
         this.x2 =this.x+this.width;
         this.y2 = this.y+this.height;
         //resets velocities
         this.vx = -2;
         this.vy = -1.7; //-1.7
+        if(score.checkScore() ===1){
+            alert("Player 1 Wins");
+            score.reset();
+            this.pause();
+        }
+        if(score.checkScore() ===2){
+            alert("Player 2 Wins");
+            score.reset();
+            this.pause();
+        }
     };
-    
+    this.pause = function(){
+        this.vxSpare = this.vx;
+        this.vySpare = this.vy;
+        this.vx = 0;
+        this.vy = 0;
+        this.canPause = false; //cancels ability to unpause until new press occurs
+    };
+    this.unpause = function(){
+        this.vx = this.vxSpare;
+        this.vy = this.vySpare;
+        this.vxSpare = 0;
+        this.vySpare = 0;
+        this.canPause = false; //allows for another (un)pause until new press occurs
+    }
     /*handles pausing/unpausing of the game*/
     this.checkPause = function(){
         if(Key.isPressed(Key.P) && this.vx !== 0 && this.canPause){
-            this.vxSpare = this.vx;
-            this.vySpare = this.vy;
-            this.vx = 0;
-            this.vy = 0;
-            this.canPause = false;  //cancels ability to unpause until new press occures
+            this.pause();
             //console.log('pause');  
         }else if(Key.isPressed(Key.P) && this.vx == 0 && this.canPause){
-            this.vx = this.vxSpare;
-            this.vy = this.vySpare;
-            this.vxSpare = 0;
-            this.vySpare = 0;
-            this.canPause = false;
+            this.unpause();
             //console.log('unpause');
         }else if(!Key.isPressed(Key.P)){  //allows for another (un)pause when button is released
             this.canPause = true;
@@ -162,9 +181,6 @@ function paddle(x, y){
    //lower right corner
    this.x2 = this.x+this.width;
    this.y2 = this.y+this.height;
-   
-   ctx.fillStyle = "rgb(0, 0, 200)";
-   ctx.fillRect(this.x, this.y, this.width, this.height); 
    
    //updates paddles position according to key press
    this.update = function(){
@@ -187,6 +203,7 @@ function paddle(x, y){
         ctx.fillStyle = "rgb(0, 150, 0)";
         ctx.fillRect(this.x, this.y, this.width, this.height);
    };
+   this.draw();
 
    //called when up/w key is pressed, cannot go past borders
    this.moveUp = function(){
@@ -204,6 +221,52 @@ function paddle(x, y){
         }
    };
 };
+
+function scoreboard(){
+    this.score1 = 0;
+    this.score2 = 0;
+    this.scoreList = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+    this.drawScore = function(){
+       //draws middle line
+       ctx.lineWidth=5;
+       ctx.strokeStyle="white";
+       ctx.beginPath();
+       ctx.moveTo(300, 0);
+       ctx.lineTo(300, 340);
+       ctx.stroke();
+       //draws score numbers
+       
+       ctx.font = "bold 24pt Arial";
+       ctx.fillStyle = "white";
+       if(this.score1 ===6){
+           ctx.fillText(this.scoreList[this.score1]+"*", 260, 40);
+       }else{
+           ctx.fillText(this.scoreList[this.score1], 260, 40);
+       }
+       if(this.score2 === 6){
+           ctx.fillText(this.scoreList[this.score2]+"*", 320, 40);
+       }else{
+           ctx.fillText(this.scoreList[this.score2], 320, 40);   
+       }
+    }
+
+    this.checkScore = function(){
+        if(this.score1===7){
+            return 1;
+        }
+        if(this.score2 ===7){
+            return 2;
+        }
+    }
+
+    this.reset = function(){
+        this.score1 = 0;
+        this.score2 = 0;
+    }
+};
+
+
+
 /*
 Key helper class that keeps track of keys up and down
 in _pressed array
@@ -240,26 +303,23 @@ var Key = {
             this._pressed[event.which] = true;
         }
     },
-    
     isPressed: function(keyCode){
         return this._pressed[keyCode];
     }
-    
-    
 };
-
-var block1 = new block(canvasW/2, canvasH/2, 20, 20); //ping pong object
+var block1 = new block(290, 160, 20, 20); //ping pong object
 var paddle1 = new paddle(10, 140); // left paddle
 var paddle2 = new paddle(575, 140); //right paddle
+var score = new scoreboard();
 //event loop, runs every 0.025 seconds
 setInterval(function(){
     //clears whole screen before objects are redrawn
     ctx.clearRect(0, 0, 600, 340);
+    score.drawScore();
     block1.moveBlock();
     paddle1.update();
     paddle2.update();
 }, 25);
-
 //Event listeners that check for keyboard input
 window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); //breaks left paddle
 window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
