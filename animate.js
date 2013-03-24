@@ -46,6 +46,8 @@ function block(x, y, width, height){
     //velocity horizontal and vertical(postive = down)
     this.vx = -2;
     this.vy = -1.7;
+    this.vxSpare = 0;
+    this.vySpare = 0;
     //cap at 14
 
     //getter for horizontal velocity
@@ -88,7 +90,7 @@ function block(x, y, width, height){
         if(Math.abs(this.vy*-1.1)<12){
             this.vy = this.vy*-1.1;
         }else{
-            this.vy = this.vy*1.1;
+            this.vy = this.vy*-1.1;
         }
         //this.vx = this.vx*1.1;
         //this.vy = this.vy*-1.1;
@@ -98,6 +100,7 @@ function block(x, y, width, height){
     redraws block in its current direction to mimic movement
     */
     this.moveBlock = function(){
+        //this.checkPause();
         this.collision(); //checks for collision conditions
         this.x = this.x+(1*this.vx); //keeps block moving in current direction
         this.x2 = this.x2+(1*this.vx);
@@ -131,7 +134,7 @@ function block(x, y, width, height){
             this.bounceX();
         }
 
-    };
+    }
     /*
     resets ball to center screen when side walls are crossed
     velocities are reset
@@ -144,6 +147,21 @@ function block(x, y, width, height){
         //resets velocities
         this.vx = -2;
         this.vy = -1.7; //-1.7
+    };
+
+    this.checkPause = function(){
+        if(Key.isPressed(Key.P) && this.vxSpare == 0){
+            this.vxSpare = this.vx;
+            this.vySpare = this.vy;
+            this.vx = 0;
+            this.vy = 0;
+        }else if(Key.isPressed(Key.P) && this.vxSpare != 0){
+            this.vx = this.vxSpare;
+            this.vy = this.vySpare;
+            this.vxSpare = 0;
+            this.vySpare = y;
+        }
+
     };
 };
 
@@ -166,9 +184,13 @@ function paddle(x, y){
    //updates paddles position according to key press
    this.update = function(){
         if(this.x > 300){  // for right paddle
-            if(Key.isDown(Key.UP)) this.moveUp();
-            if(Key.isDown(Key.DOWN)) this.moveDown();
-
+            if(Key.isDown(Key.UP)){
+                this.moveUp();
+                console.log("pressing player 2 up");
+            }if(Key.isDown(Key.DOWN)){
+                this.moveDown();
+                console.log("pressing player 2 down");
+            }
         }else{   //for left paddle
             if(Key.isDown(Key.W)) this.moveUp();
             if(Key.isDown(Key.S)) this.moveDown();
@@ -184,16 +206,16 @@ function paddle(x, y){
    //called when up/w key is pressed, cannot go past borders
    this.moveUp = function(){
        if(this.y>0){
-            this.y = this.y-3;
-            this.y2 = this.y2-3;
+            this.y = this.y-4;
+            this.y2 = this.y2-4;
        }
    };
 
    //called when down/s key is pressed, cannot go past borders
    this.moveDown = function(){
         if(this.y2<340){
-            this.y = this.y+3;
-            this.y2 = this.y2+3;
+            this.y = this.y+4;
+            this.y2 = this.y2+4;
         }
    };
 };
@@ -211,6 +233,7 @@ var Key = {
     DOWN: 40,
     W: 87,
     S: 83,
+    P: 80,
     
     //the status of the corresponding key(down/true or up/false)
     isDown: function(keyCode){
@@ -223,7 +246,21 @@ var Key = {
     //unsets array index when key is released
     onKeyup: function(event){
         delete this._pressed[event.keyCode];
+    },
+    
+    onKeypress: function(event){
+        if(this._pressed[event.keyCode]){
+            delete this._pressed[event.keyCode];
+        }else{
+            this._pressed[event.keyCode] = true;
+        }
+    },
+    
+    isPressed: function(keyCode){
+        return this._pressed[keyCode];
     }
+    
+    
 };
 
 var block1 = new block(canvasW/2, canvasH/2, 20, 20); //ping pong object
@@ -241,6 +278,7 @@ setInterval(function(){
 /*
 Event listeners that check for keyboard input
 */
+//window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); breaks left paddle
 window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
 window.addEventListener('keydown', function(event) {Key.onKeydown(event); }, false);
 
