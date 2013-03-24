@@ -221,12 +221,17 @@ function paddle(x, y){
         }
    };
 };
-
-function scoreboard(){
+/*
+scoreboard object with court design
+takes in max score
+*/
+function scoreboard(maxScore){
     this.score1 = 0;
     this.score2 = 0;
+    this.maxScore = maxScore;
     this.scoreList = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
     this.drawScore = function(){
+       
        //draws middle line
        ctx.lineWidth=5;
        ctx.strokeStyle="white";
@@ -234,44 +239,40 @@ function scoreboard(){
        ctx.moveTo(300, 0);
        ctx.lineTo(300, 340);
        ctx.stroke();
-       //draws score numbers
-       
+
+       //draws score numbers with * for gamepoint
        ctx.font = "bold 24pt Arial";
        ctx.fillStyle = "white";
-       if(this.score1 ===6){
+       if(this.score1 ===this.maxScore-1){
            ctx.fillText(this.scoreList[this.score1]+"*", 260, 40);
        }else{
            ctx.fillText(this.scoreList[this.score1], 260, 40);
        }
-       if(this.score2 === 6){
+       if(this.score2 === this.maxScore-1){
            ctx.fillText(this.scoreList[this.score2]+"*", 320, 40);
        }else{
            ctx.fillText(this.scoreList[this.score2], 320, 40);   
        }
     }
-
+    //checks if either player has won, retures corresponding number
     this.checkScore = function(){
-        if(this.score1===7){
+        if(this.score1===this.maxScore){
             return 1;
         }
-        if(this.score2 ===7){
+        if(this.score2 ===this.maxScore){
             return 2;
         }
     }
-
+    //resets scores when player wins
     this.reset = function(){
         this.score1 = 0;
         this.score2 = 0;
     }
 };
-
-
-
 /*
 Key helper class that keeps track of keys up and down
 in _pressed array
 */
-
 var Key = {
     //array that keeps track of key presses
     _pressed: {},
@@ -283,7 +284,7 @@ var Key = {
     DOWN: 40,   //player2 down
     P: 80,      //pause/unpause ball
     
-    //the status of the corresponding key(down/true or up/false)
+    //returns if key is down/true or up/false)
     isDown: function(keyCode){
         return this._pressed[keyCode];
     },
@@ -295,32 +296,36 @@ var Key = {
     onKeyup: function(event){
         delete this._pressed[event.keyCode];
     },
-    
+    //sets array index when button is presses, unsets if unpressed
     onKeypress: function(event){
-        if(this._pressed[event.which]){
+        if(!this._pressed[event.which]){
             delete this._pressed[event.which];  //use event.which for firefox keyPress
         }else{                                  //event.keyCode for IE onKeyPress
             this._pressed[event.which] = true;
         }
     },
+    //returs if key is pressed down
     isPressed: function(keyCode){
         return this._pressed[keyCode];
     }
 };
+
+//***game start***
 var block1 = new block(290, 160, 20, 20); //ping pong object
 var paddle1 = new paddle(10, 140); // left paddle
 var paddle2 = new paddle(575, 140); //right paddle
-var score = new scoreboard();
+var score = new scoreboard(7); //scoreboard with middle line 
 //event loop, runs every 0.025 seconds
 setInterval(function(){
     //clears whole screen before objects are redrawn
     ctx.clearRect(0, 0, 600, 340);
+    //event methods for each game object
     score.drawScore();
     block1.moveBlock();
     paddle1.update();
     paddle2.update();
 }, 25);
 //Event listeners that check for keyboard input
-window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); //breaks left paddle
+window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); 
 window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
 window.addEventListener('keydown', function(event) {Key.onKeydown(event); }, false);
