@@ -131,6 +131,17 @@ function block(x, y, width, height){
         this.vx = -2;
         this.vy = -1.7; //-1.7
         
+        //checks for win conditions, pauses and restarts game
+        if(score.checkScore() ===1){
+            alert("Player 1 Wins");
+            score.resetScore();
+            this.pause();
+        }
+        if(score.checkScore() ===2){
+            alert("Player 2 Wins");
+            score.resetScore();
+            this.pause();
+        }
         //cycles starting directions after reset based on score
         var totalscore = score.score1 +score.score2 + 4;
         if(totalscore%4==1){
@@ -144,17 +155,6 @@ function block(x, y, width, height){
             this.vy = this.vy*-1;
             //console.log("3");
         }   
-        //checks for win conditions, pauses and restarts game
-        if(score.checkScore() ===1){
-            alert("Player 1 Wins");
-            score.resetScore();
-            this.pause();
-        }
-        if(score.checkScore() ===2){
-            alert("Player 2 Wins");
-            score.resetScore();
-            this.pause();
-        }
     };
 
     //pauses the game with P

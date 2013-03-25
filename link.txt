@@ -1,2 +1,2 @@
-www.jsedlacek.info/~mjl288/Game-Development-in-JavaScript-Tutorial.index.html
+www.jsedlacek.info/~mjl288/Pong-Plus/index.html
 
