@@ -108,7 +108,7 @@ function block(x, y, width, height){
         }
         this.paddleBounce();
     };
-
+    //detects collision with paddle
     this.paddleBounce = function(){
         if(this.x <= paddle1.x2 && (this.y <= paddle1.y2 && this.y2 >= paddle1.y)){
             this.bounceX();
@@ -130,17 +130,34 @@ function block(x, y, width, height){
         //resets velocities
         this.vx = -2;
         this.vy = -1.7; //-1.7
+        
+        //cycles starting directions after reset based on score
+        var totalscore = score.score1 +score.score2 + 4;
+        if(totalscore%4==1){
+            this.vx = this.vx*-1;
+            //console.log("1");
+        }else if(totalscore%4==2){
+            this.vy = this.vy*-1;
+            //console.log("2");
+        }else if(totalscore%4==3){
+            this.vx = this.vx*-1;
+            this.vy = this.vy*-1;
+            //console.log("3");
+        }   
+        //checks for win conditions, pauses and restarts game
         if(score.checkScore() ===1){
             alert("Player 1 Wins");
-            score.reset();
+            score.resetScore();
             this.pause();
         }
         if(score.checkScore() ===2){
             alert("Player 2 Wins");
-            score.reset();
+            score.resetScore();
             this.pause();
         }
     };
+
+    //pauses the game with P
     this.pause = function(){
         this.vxSpare = this.vx;
         this.vySpare = this.vy;
@@ -148,6 +165,7 @@ function block(x, y, width, height){
         this.vy = 0;
         this.canPause = false; //cancels ability to unpause until new press occurs
     };
+    //unpauses the game  with P
     this.unpause = function(){
         this.vx = this.vxSpare;
         this.vy = this.vySpare;
@@ -226,12 +244,13 @@ scoreboard object with court design
 takes in max score
 */
 function scoreboard(maxScore){
-    this.score1 = 0;
-    this.score2 = 0;
-    this.maxScore = maxScore;
+    this.score1 = 0;    //player 1 score
+    this.score2 = 0;    //player 2 score
+    this.maxScore = maxScore;  //score that wins the game
     this.scoreList = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+
+    //draws court, score, unpause prompt at start of game
     this.drawScore = function(){
-       
        //draws middle line
        ctx.lineWidth=5;
        ctx.strokeStyle="white";
@@ -239,7 +258,15 @@ function scoreboard(maxScore){
        ctx.moveTo(300, 0);
        ctx.lineTo(300, 340);
        ctx.stroke();
-
+       //prints "Press P to start game" at start of every game
+       if(block1.x == 290 && block1.y == 160 && block1.vx==0){
+            ctx.font = "bold 24pt Arial";
+            ctx.fillStyle = "white";
+            ctx.fillText("Press", 200, 130);
+            ctx.fillText("P to", 310, 130);
+            ctx.fillText("start", 215, 170);
+            ctx.fillText("game", 310, 170);
+       }
        //draws score numbers with * for gamepoint
        ctx.font = "bold 24pt Arial";
        ctx.fillStyle = "white";
@@ -253,6 +280,8 @@ function scoreboard(maxScore){
        }else{
            ctx.fillText(this.scoreList[this.score2], 320, 40);   
        }
+       
+       
     }
     //checks if either player has won, retures corresponding number
     this.checkScore = function(){
@@ -264,11 +293,12 @@ function scoreboard(maxScore){
         }
     }
     //resets scores when player wins
-    this.reset = function(){
+    this.resetScore = function(){
         this.score1 = 0;
         this.score2 = 0;
     }
 };
+
 /*
 Key helper class that keeps track of keys up and down
 in _pressed array
@@ -315,6 +345,8 @@ var block1 = new block(290, 160, 20, 20); //ping pong object
 var paddle1 = new paddle(10, 140); // left paddle
 var paddle2 = new paddle(575, 140); //right paddle
 var score = new scoreboard(7); //scoreboard with middle line 
+//start game from a paused state
+block1.pause();
 //event loop, runs every 0.025 seconds
 setInterval(function(){
     //clears whole screen before objects are redrawn

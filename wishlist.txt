@@ -1,12 +1,10 @@
 ***PONG WISH LIST***
-
+    ***better comments
     fine-tune accelerating ball*tehter vertical velocity to horizontal
     fine tune paddle speed*//make faster after certain velocity
     fixed paddle kamehameha glitch
-    velocity cap on ball (12)*
     add bounce sound effects
     score keeper with win screen*display score
-    start game with p button
     general presentation
     circle pong ball*tweak hitbox
     online play? (keep dreaming)
