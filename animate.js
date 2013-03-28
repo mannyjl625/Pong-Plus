@@ -23,12 +23,11 @@ function block(x, y, width, height){
     this.height = height;
     this.radius = width/2;
     //upper left coordinates
-    this.x = x;
-    this.y = y;
-
+    this.x = x
+    this.y = y
     //lower right corner coordinate
     this.x2 = x + this.width;
-    this.y2 = y + this.width;
+    this.y2 = y + this.height;
     //velocity horizontal and vertical(postive = down)
     //cap at 12
     this.vx = -2;
@@ -40,18 +39,19 @@ function block(x, y, width, height){
 
     this.draw = function(){
         //draws the block
-        ctx.fillStyle = "rgb(0, 200, 0)";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        /*
-        ctx.fillStyle="black";
+        
+        //ctx.fillStyle = "rgb(200, 0, 0)";
+        //ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle="green";
         ctx.beginPath();
-        ctx.arc(this.x,this.y,this.radius,0,Math.PI*2,true);
+        ctx.arc(this.x + 10,this.y + 10,this.radius,0,Math.PI*2,true); // added +10 to center ball 
         ctx.fill();
-        */
+        
     };
     this.draw();     
     //reverses horizontal direciton
     this.bounceX = function(){
+        //caps speed at 12
         if(Math.abs(this.vx*-1.1)<=12){
             this.vx = this.vx*-1.1;
         }else{
@@ -61,12 +61,13 @@ function block(x, y, width, height){
     };
     //reveres vertical direction
     this.bounceY = function(){
+        //caps speed at 12
         if(Math.abs(this.vx*1.1)<12){
             this.vx = this.vx*1.1;
         }else{
             this.vx - this.vx*1;
         }
-
+        //caps speed at 12
         if(Math.abs(this.vy*-1.1)<12){
             this.vy = this.vy*-1.13;
         }else{
@@ -112,9 +113,11 @@ function block(x, y, width, height){
     this.paddleBounce = function(){
         if(this.x <= paddle1.x2 && (this.y <= paddle1.y2 && this.y2 >= paddle1.y)){
             this.bounceX();
+            console.log(this.vx);
         }
         if(this.x2 >= paddle2.x && (this.y <= paddle2.y2 && this.y2 >= paddle2.y)){
             this.bounceX();
+            console.log(this.vx);
         }
 
     }

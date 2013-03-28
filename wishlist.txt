@@ -5,6 +5,5 @@
     add bounce sound effects
     *display score of games won at end of games
     general presentation/get a decent color scheme
-    circle pong ball/tweak hitbox
     online play? (keep dreaming)
     twist!?!? cycle colors kinda like outland
