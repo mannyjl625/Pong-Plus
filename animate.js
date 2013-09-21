@@ -16,6 +16,15 @@ var ctx = canvas.getContext('2d');
 /*
 block class, includes coordinates, velocities, collision and move functions
 */
+var keys = {};
+$(document).ready(function(e){
+	$(window).keydown(function(event){
+		keys[event.which] = true;
+		console.log(event.which);
+	}).keyup(function(event){
+		delete keys[event.which];
+	});
+});
 
 function block(x, y, width, height){
 
@@ -178,7 +187,7 @@ function block(x, y, width, height){
     }
     /*handles pausing/unpausing of the game*/
     this.checkPause = function(){
-        if(Key.isPressed(Key.P) && this.vx !== 0 && this.canPause){
+        /*if(Key.isPressed(Key.P) && this.vx !== 0 && this.canPause){
             this.pause();
             //console.log('pause');  
         }else if(Key.isPressed(Key.P) && this.vx == 0 && this.canPause){
@@ -187,7 +196,9 @@ function block(x, y, width, height){
         }else if(!Key.isPressed(Key.P)){  //allows for another (un)pause when button is released
             this.canPause = true;
         }
-    };
+    */
+	};
+	
 };
 
 //initialize with starting x,y coordinates
@@ -205,7 +216,8 @@ function paddle(x, y){
    
    //updates paddles position according to key press
    this.update = function(){
-        if(this.x > 300){  // for right paddle
+       /* 
+	   if(this.x > 300){  // for right paddle
             if(Key.isDown(Key.UP)){
                 this.moveUp();
                 //console.log("pressing player 2 up");
@@ -217,6 +229,7 @@ function paddle(x, y){
             if(Key.isDown(Key.W)) this.moveUp();
             if(Key.isDown(Key.S)) this.moveDown();
         }
+		*/
         this.draw();
    }
    //draws paddle
@@ -306,6 +319,8 @@ function scoreboard(maxScore){
 Key helper class that keeps track of keys up and down
 in _pressed array
 */
+
+/*
 var Key = {
     //array that keeps track of key presses
     _pressed: {},
@@ -343,6 +358,7 @@ var Key = {
     }
 };
 
+*/
 //***game start***
 var block1 = new block(290, 160, 20, 20); //ping pong object
 var paddle1 = new paddle(10, 140); // left paddle
@@ -353,14 +369,34 @@ block1.pause();
 //event loop, runs every 0.025 seconds
 setInterval(function(){
     //clears whole screen before objects are redrawn
-    ctx.clearRect(0, 0, 600, 340);
+    ctx.clearRect(0, 0, canvasW, canvasH);
     //event methods for each game object
     score.drawScore();
     block1.moveBlock();
     paddle1.update();
+	if(keys[87]) paddle1.moveUp();
+	if(keys[83]) paddle1.moveDown();
+	if(keys[38]) paddle2.moveUp();
+	if(keys[40]) paddle2.moveDown();
     paddle2.update();
 }, 25);
+
+/*
+$("#screen").keypress(function(event){
+	if(event.which == 87){
+		console.log("moving");
+		paddle1.moveUp();		
+	}
+});
+
+*/
+
+
 //Event listeners that check for keyboard input
+//
+/*
+ 
 window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); 
 window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
 window.addEventListener('keydown', function(event) {Key.onKeydown(event); }, false);
+*/
