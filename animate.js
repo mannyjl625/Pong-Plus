@@ -187,17 +187,18 @@ function block(x, y, width, height){
     }
     /*handles pausing/unpausing of the game*/
     this.checkPause = function(){
-        /*if(Key.isPressed(Key.P) && this.vx !== 0 && this.canPause){
+        
+		if((keys[32]) && this.vx !== 0 && this.canPause){
             this.pause();
             //console.log('pause');  
-        }else if(Key.isPressed(Key.P) && this.vx == 0 && this.canPause){
+        }else if((keys[32]) && this.vx == 0 && this.canPause){
             this.unpause();
             //console.log('unpause');
-        }else if(!Key.isPressed(Key.P)){  //allows for another (un)pause when button is released
+        }else if(!keys[32]){  //allows for another (un)pause when button is released
             this.canPause = true;
         }
-    */
 	};
+	
 	
 };
 
@@ -216,20 +217,14 @@ function paddle(x, y){
    
    //updates paddles position according to key press
    this.update = function(){
-       /* 
-	   if(this.x > 300){  // for right paddle
-            if(Key.isDown(Key.UP)){
-                this.moveUp();
-                //console.log("pressing player 2 up");
-            }if(Key.isDown(Key.DOWN)){
-                this.moveDown();
-                //console.log("pressing player 2 down");
-            }
-        }else{   //for left paddle
-            if(Key.isDown(Key.W)) this.moveUp();
-            if(Key.isDown(Key.S)) this.moveDown();
-        }
-		*/
+		if(this.x > 300){  // for right paddle
+			if(keys[38]) this.moveUp();
+			if(keys[40]) this.moveDown();
+
+		}else{   //for left paddle
+			if(keys[87]) this.moveUp();
+			if(keys[83]) this.moveDown();
+		}
         this.draw();
    }
    //draws paddle
@@ -279,7 +274,7 @@ function scoreboard(maxScore){
             ctx.font = "bold 24pt Arial";
             ctx.fillStyle = "white";
             ctx.fillText("Press", 200, 130);
-            ctx.fillText("P to", 310, 130);
+            ctx.fillText("Space", 310, 130);
             ctx.fillText("start", 215, 170);
             ctx.fillText("game", 310, 170);
        }
@@ -314,51 +309,6 @@ function scoreboard(maxScore){
         this.score2 = 0;
     }
 };
-
-/*
-Key helper class that keeps track of keys up and down
-in _pressed array
-*/
-
-/*
-var Key = {
-    //array that keeps track of key presses
-    _pressed: {},
-
-    //controls
-    W: 87,      //player1 up
-    S: 83,      //player1 down
-    UP: 38,     //player2 up
-    DOWN: 40,   //player2 down
-    P: 80,      //pause/unpause ball
-    
-    //returns if key is down/true or up/false)
-    isDown: function(keyCode){
-        return this._pressed[keyCode];
-    },
-    //sets array index to true when key is pressed
-    onKeydown: function(event){
-        this._pressed[event.keyCode] = true;
-    },
-    //unsets array index when key is released
-    onKeyup: function(event){
-        delete this._pressed[event.keyCode];
-    },
-    //sets array index when button is presses, unsets if unpressed
-    onKeypress: function(event){
-        if(!this._pressed[event.which]){
-            delete this._pressed[event.which];  //use event.which for firefox keyPress
-        }else{                                  //event.keyCode for IE onKeyPress
-            this._pressed[event.which] = true;
-        }
-    },
-    //returs if key is pressed down
-    isPressed: function(keyCode){
-        return this._pressed[keyCode];
-    }
-};
-
-*/
 //***game start***
 var block1 = new block(290, 160, 20, 20); //ping pong object
 var paddle1 = new paddle(10, 140); // left paddle
@@ -374,29 +324,6 @@ setInterval(function(){
     score.drawScore();
     block1.moveBlock();
     paddle1.update();
-	if(keys[87]) paddle1.moveUp();
-	if(keys[83]) paddle1.moveDown();
-	if(keys[38]) paddle2.moveUp();
-	if(keys[40]) paddle2.moveDown();
     paddle2.update();
 }, 25);
 
-/*
-$("#screen").keypress(function(event){
-	if(event.which == 87){
-		console.log("moving");
-		paddle1.moveUp();		
-	}
-});
-
-*/
-
-
-//Event listeners that check for keyboard input
-//
-/*
- 
-window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); 
-window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
-window.addEventListener('keydown', function(event) {Key.onKeydown(event); }, false);
-*/
